@@ -1,0 +1,124 @@
+name: Deploy Molecule
+
+on:
+  workflow_call:
+    inputs:
+      namespace:
+        description: namespace to deploy chart to
+        required: true
+        type: string
+      molecule_path:
+        description: path to molecule to deploy
+        required: true
+        type: string
+      chart_name:
+        description: name of the chart to deploy
+        required: true
+        type: string
+      tag:
+        description: tag to tag built images with
+        required: true
+        type: string
+      deployment_name:
+        description: optional deployment name
+        required: false
+        type: string
+      helm_flags:
+        description: helm flags to pass to the command
+        required: false
+        type: string
+
+jobs:
+  deploy-molecule:
+    name: Deploy ${{ inputs.molecule_path }} ${{ inputs.chart_name }}
+    runs-on: [github-hosted-cloud-builder]
+    steps:
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Install Helm
+        uses: Azure/setup-helm@v3
+
+      - name: Log in to Harbor Registry
+        run: |
+           echo '${{ secrets.HELM_PASSWORD }}' | helm registry login harbor.rutherford.patternlabs.tech -u '${{ secrets.HELM_USER }}' --password-stdin
+
+      - name: Setup .netrc github.com
+        uses: extractions/netrc@v1
+        with:
+          machine: github.com
+          username: patterngit
+          password: ${{ secrets.REPO_ACCESS_PAT }}
+
+      - name: Setup .netrc api.github.com
+        uses: extractions/netrc@v1
+        with:
+          machine: api.github.com
+          username: patterngit
+          password: ${{ secrets.REPO_ACCESS_PAT }}
+
+      - name: Setup .netrc raw.githubusercontent.com
+        uses: extractions/netrc@v1
+        with:
+          machine: raw.githubusercontent.com
+          username: patterngit
+          password: ${{ secrets.REPO_ACCESS_PAT }}
+
+      - id: "auth"
+        uses: "google-github-actions/auth@v2"
+        with:
+            project_id: "stalwart-summer-374519"
+            workload_identity_provider: "projects/515604670361/locations/global/workloadIdentityPools/github/providers/pattern"
+            service_account: "github-runner@stalwart-summer-374519.iam.gserviceaccount.com"
+    
+      - name: Checkout Dev Containers
+        uses: actions/checkout@v3
+        with:
+            repository: Pattern-Labs/dev-containers
+            token: ${{ secrets.REPO_ACCESS_PAT }}
+            path: dev-containers
+            ref: main
+
+      - name: Install the Pattern CLI
+        run: |
+            cd dev-containers
+            sudo env_modules/99-google_cloud.sh
+            ./install_pattern_cli.sh
+            ./setup_host.sh -q
+            pattern version
+            pattern clusters init
+
+      - name: Setup Bazel
+        uses: bazel-contrib/setup-bazel@0.9.1
+        with:
+          # Avoid downloading Bazel every time.
+          bazelisk-cache: true
+
+      - name: Switch to the right namespace
+        run: kubens ${{ inputs.namespace }}
+
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          lfs: true
+
+      - name: Deploy Molecule
+        run: |
+          cd ${{ inputs.molecule_path }}
+
+          # DEPLOY CMD
+          COMMAND="pattern molecule deploy ${{ inputs.chart_name }} -t ${{ inputs.tag }}"
+
+          # Check if deployment_name is set is set
+          if [ -n "${{ inputs.deployment_name }}" ]; then
+            COMMAND="$COMMAND -n ${{ inputs.deployment_name }}"
+          fi
+          # Check if helm flags is set
+          if [ -n "${{ inputs.helm_flags }}" ]; then
+            COMMAND="$COMMAND -- ${{ inputs.helm_flags }}"
+          fi
+          # Run Deploy
+          $COMMAND
