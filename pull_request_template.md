@@ -2,6 +2,10 @@
 Describe the change(s) you're making, and why. 
 Include links to any related Issues or other tracking tools as appropriate.
 
+### Customer-Facing Description
+Describe the change(s) you're making from the perspective of a customer or internal customer (ex: the release tester).
+This section may be used to construct customer-facing release notes, so be specific, but not overly technical.
+
 ## Testing
 Describe the testing, if any, that you'll do (or have done) prior to merging.
 Be sure to consider how this change might impact our other repositories. 
