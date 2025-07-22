@@ -76,4 +76,4 @@ jobs:
       - name: Build Molecule
         run: |
           cd ${{ inputs.molecule_path }}
-          pattern molecule build -t ${{ inputs.tag }} --with-cloud-cache=${{ inputs.with_cloud_cache }}
+          pattern molecule build -t ${{ inputs.tag }} --with_cloud_cache=${{ inputs.with_cloud_cache }}
