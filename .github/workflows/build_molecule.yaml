@@ -11,6 +11,12 @@ on:
         description: tag to tag built images with
         required: true
         type: string
+      with_cloud_cache:
+        description: whether to use the cloud cache
+        required: false
+        type: boolean
+        default: false
+
 jobs:
   build-molecule:
     name: Build ${{ inputs.molecule_path }}
@@ -27,7 +33,7 @@ jobs:
 
       - name: Log in to Harbor Registry
         run: |
-           echo '${{ secrets.HELM_PASSWORD }}' | helm registry login harbor.rutherford.patternlabs.tech -u '${{ secrets.HELM_USER }}' --password-stdin
+          echo '${{ secrets.HELM_PASSWORD }}' | helm registry login harbor.rutherford.patternlabs.tech -u '${{ secrets.HELM_USER }}' --password-stdin
 
       - name: Setup .netrc github.com
         uses: extractions/netrc@v1
@@ -57,7 +63,7 @@ jobs:
           chmod +x ~/.local/bin/pattern
 
       - name: Setup Bazel
-        uses: bazel-contrib/setup-bazel@0.9.1
+        uses: bazel-contrib/setup-bazel@0.15.0
         with:
           # Avoid downloading Bazel every time.
           bazelisk-cache: true
@@ -70,4 +76,4 @@ jobs:
       - name: Build Molecule
         run: |
           cd ${{ inputs.molecule_path }}
-          pattern molecule build -t ${{ inputs.tag }}
+          pattern molecule build -t ${{ inputs.tag }} --with-cloud-cache=${{ inputs.with_cloud_cache }}
