@@ -73,6 +73,12 @@ jobs:
         with:
           lfs: true
 
+      - name: Set Up Build Cache Credentials
+        if: ${{ inputs.with_cloud_cache }}
+        env:
+          DATA: "${{ secrets.GOOGLE_CLOUD_BUILD_CACHE_ACCESS_KEY }}"
+        run: echo $DATA > ./google-services.json
+
       - name: Build Molecule
         run: |
           cd ${{ inputs.molecule_path }}
