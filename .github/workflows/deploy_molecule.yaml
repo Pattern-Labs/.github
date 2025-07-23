@@ -27,6 +27,11 @@ on:
         description: helm flags to pass to the command
         required: false
         type: string
+      cluster_name:
+        description: name of the cluster to deploy to
+        required: false
+        default: "rutherford"
+        type: string
 
 jobs:
   deploy-molecule:
@@ -44,7 +49,7 @@ jobs:
 
       - name: Log in to Harbor Registry
         run: |
-           echo '${{ secrets.HELM_PASSWORD }}' | helm registry login harbor.rutherford.patternlabs.tech -u '${{ secrets.HELM_USER }}' --password-stdin
+          echo '${{ secrets.HELM_PASSWORD }}' | helm registry login harbor.rutherford.patternlabs.tech -u '${{ secrets.HELM_USER }}' --password-stdin
 
       - name: Setup .netrc github.com
         uses: extractions/netrc@v1
@@ -70,32 +75,35 @@ jobs:
       - id: "auth"
         uses: "google-github-actions/auth@v2"
         with:
-            project_id: "stalwart-summer-374519"
-            workload_identity_provider: "projects/515604670361/locations/global/workloadIdentityPools/github/providers/pattern"
-            service_account: "github-runner@stalwart-summer-374519.iam.gserviceaccount.com"
-    
+          project_id: "stalwart-summer-374519"
+          workload_identity_provider: "projects/515604670361/locations/global/workloadIdentityPools/github/providers/pattern"
+          service_account: "github-runner@stalwart-summer-374519.iam.gserviceaccount.com"
+
       - name: Checkout Dev Containers
         uses: actions/checkout@v3
         with:
-            repository: Pattern-Labs/dev-containers
-            token: ${{ secrets.REPO_ACCESS_PAT }}
-            path: dev-containers
-            ref: main
+          repository: Pattern-Labs/dev-containers
+          token: ${{ secrets.REPO_ACCESS_PAT }}
+          path: dev-containers
+          ref: main
 
       - name: Install the Pattern CLI
         run: |
-            cd dev-containers
-            sudo env_modules/99-google_cloud.sh
-            ./install_pattern_cli.sh
-            ./setup_host.sh -q
-            pattern version
-            pattern clusters init
+          cd dev-containers
+          sudo env_modules/99-google_cloud.sh
+          ./install_pattern_cli.sh
+          ./setup_host.sh -q
+          pattern version
+          pattern clusters init
 
       - name: Setup Bazel
-        uses: bazel-contrib/setup-bazel@0.9.1
+        uses: bazel-contrib/setup-bazel@0.15.0
         with:
           # Avoid downloading Bazel every time.
           bazelisk-cache: true
+
+      - name: Switch to the right cluster
+        run: kubectx ${{ inputs.cluster_name }}
 
       - name: Switch to the right namespace
         run: kubens ${{ inputs.namespace }}
