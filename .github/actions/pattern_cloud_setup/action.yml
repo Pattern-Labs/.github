@@ -36,6 +36,7 @@ runs:
       uses: Azure/setup-helm@v3
 
     - name: Log in to Harbor Registry
+      shell: bash
       run: |
         echo '${{ inputs.helm_password }}' | helm registry login harbor.rutherford.patternlabs.tech -u '${{ inputs.helm_user }}' --password-stdin
 
