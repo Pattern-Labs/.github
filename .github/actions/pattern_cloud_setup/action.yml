@@ -47,6 +47,8 @@ runs:
 
     - name: Install the Pattern CLI
       uses: Pattern-Labs/.github/.github/actions/pattern_cli@main
+      with:
+        repo_access_pat: ${{ inputs.repo_access_pat }}
 
     - name: Setup Bazel
       uses: bazel-contrib/setup-bazel@0.15.0

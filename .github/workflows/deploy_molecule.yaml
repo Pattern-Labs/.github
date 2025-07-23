@@ -38,15 +38,6 @@ jobs:
     name: Deploy ${{ inputs.molecule_path }} ${{ inputs.chart_name }}
     runs-on: [github-hosted-cloud-builder]
     steps:
-      - name: Cloud Setup
-        uses: Pattern-Labs/.github/.github/actions/pattern_cloud_setup@main
-        with:
-          docker_user: ${{ secrets.DOCKER_USER }}
-          docker_password: ${{ secrets.DOCKER_PASSWORD }}
-          helm_user: ${{ secrets.HELM_USER }}
-          helm_password: ${{ secrets.HELM_PASSWORD }}
-          repo_access_pat: ${{ secrets.REPO_ACCESS_PAT }}
-
       - name: Establish Google Cloud Auth
         id: "auth"
         uses: "google-github-actions/auth@v2"
@@ -55,9 +46,14 @@ jobs:
           workload_identity_provider: "projects/515604670361/locations/global/workloadIdentityPools/github/providers/pattern"
           service_account: "github-runner@stalwart-summer-374519.iam.gserviceaccount.com"
 
-      - name: Initialize Clusters
-        shell: bash
-        run: pattern clusters init
+      - name: Cloud Setup
+        uses: Pattern-Labs/.github/.github/actions/pattern_cloud_setup@main
+        with:
+          docker_user: ${{ secrets.DOCKER_USER }}
+          docker_password: ${{ secrets.DOCKER_PASSWORD }}
+          helm_user: ${{ secrets.HELM_USER }}
+          helm_password: ${{ secrets.HELM_PASSWORD }}
+          repo_access_pat: ${{ secrets.REPO_ACCESS_PAT }}
 
       - name: Switch to the right cluster
         run: kubectx ${{ inputs.cluster_name }}
