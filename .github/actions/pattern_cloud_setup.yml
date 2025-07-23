@@ -40,7 +40,7 @@ runs:
         echo '${{ inputs.helm_password }}' | helm registry login harbor.rutherford.patternlabs.tech -u '${{ inputs.helm_user }}' --password-stdin
 
     - name: Setup .netrc
-      uses: Pattern-Labs/.github/.github/actions/setup_netrc.yml@main
+      uses: Pattern-Labs/.github/.github/actions/setup_netrc.yml@v1
       with:
         repo_access_pat: ${{ inputs.repo_access_pat }}
 
@@ -52,7 +52,7 @@ runs:
         service_account: "github-runner@stalwart-summer-374519.iam.gserviceaccount.com"
 
     - name: Install the Pattern CLI
-      uses: Pattern-Labs/.github/.github/actions/pattern_cli.yml@main
+      uses: Pattern-Labs/.github/.github/actions/pattern_cli.yml@v1
 
     - name: Setup Bazel
       uses: bazel-contrib/setup-bazel@0.15.0
