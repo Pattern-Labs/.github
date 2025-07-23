@@ -1,4 +1,4 @@
-name: '.netrc Setup
+name: '.netrc Setup'
 description: 'Setup .netrc credentials file.'
 inputs:
   repo_access_pat:
