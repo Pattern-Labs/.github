@@ -34,7 +34,3 @@ runs:
     - name: Test Pattern CLI
       shell: bash 
       run: pattern version
-
-    - name: Initialize Clusters
-      shell: bash
-      run: pattern clusters init      
