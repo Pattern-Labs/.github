@@ -51,14 +51,6 @@ runs:
         workload_identity_provider: "projects/515604670361/locations/global/workloadIdentityPools/github/providers/pattern"
         service_account: "github-runner@stalwart-summer-374519.iam.gserviceaccount.com"
 
-    - name: Checkout Dev Containers
-      uses: actions/checkout@v3
-      with:
-        repository: Pattern-Labs/dev-containers
-        token: ${{ inputs.repo_access_pat }}
-        path: dev-containers
-        ref: main
-
     - name: Install the Pattern CLI
       uses: ./.github/actions/pattern_cli.yml
 

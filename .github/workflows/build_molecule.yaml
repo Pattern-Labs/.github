@@ -23,7 +23,7 @@ jobs:
     runs-on: [github-hosted-cloud-builder]
     steps:
       - name: Cloud Setup
-        uses: ./.github/actions/pattern_cloud_setup.yml
+        uses: Pattern-Labs/.github/.github/actions/pattern_cloud_setup.yml@main
         with:
           docker_user: ${{ secrets.DOCKER_USER }}
           docker_password: ${{ secrets.DOCKER_PASSWORD }}
