@@ -16,12 +16,20 @@ runs:
         path: dev-containers
         ref: main
 
-    - name: Install the Pattern CLI
-      run: |
-        cd dev-containers
-        sudo env_modules/99-google_cloud.sh
-        ./install_pattern_cli.sh
-        ./setup_host.sh -q
+    - name: Run gcloud env_module
+      working-directory: ./dev-containers
+      shell: bash
+      run: sudo env_modules/99-google_cloud.sh
+
+    - name: Install Pattern CLI
+      working-directory: ./dev-containers
+      shell: bash
+      run: ./install_pattern_cli.sh
+
+    - name: Setup Host
+      working-directory: ./dev-containers
+      shell: bash
+      run: ./setup_host.sh -q
 
     - name: Test Pattern CLI
       shell: bash 
