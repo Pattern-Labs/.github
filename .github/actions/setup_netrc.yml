@@ -1,0 +1,30 @@
+name: '.netrc Setup
+description: 'Setup .netrc credentials file.'
+inputs:
+  repo_access_pat:
+    description: 'GitHub Personal Access Token'
+    required: true
+    type: string
+runs:
+  using: "composite"
+  steps:
+    - name: Setup .netrc github.com
+      uses: extractions/netrc@v1
+      with:
+        machine: github.com
+        username: patterngit
+        password: ${{ inputs.repo_access_pat }}
+
+    - name: Setup .netrc api.github.com
+      uses: extractions/netrc@v1
+      with:
+        machine: api.github.com
+        username: patterngit
+        password: ${{ inputs.repo_access_pat }}
+
+    - name: Setup .netrc raw.githubusercontent.com
+      uses: extractions/netrc@v1
+      with:
+        machine: raw.githubusercontent.com
+        username: patterngit
+        password: ${{ inputs.repo_access_pat }}

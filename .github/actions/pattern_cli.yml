@@ -1,0 +1,16 @@
+name: 'Pattern CLI Setup'
+description: 'Setup Pattern CLI'
+runs:
+  using: "composite"
+  steps:
+    - name: Install the Pattern CLI
+      run: |
+        mkdir -p ~/.local/bin
+        curl -L -n -H "Accept: application/octet-stream" -o ~/.local/bin/pattern `curl -L -n https://api.github.com/repos/Pattern-Labs/pattern_cli/releases/latest | jq -r .assets[0].url`
+        chmod +x ~/.local/bin/pattern
+
+    - name: Test Pattern CLI
+      run: pattern version
+
+    - name: Initialize Clusters
+      run: pattern clusters init
