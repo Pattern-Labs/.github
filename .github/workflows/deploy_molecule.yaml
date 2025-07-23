@@ -47,6 +47,14 @@ jobs:
           helm_password: ${{ secrets.HELM_PASSWORD }}
           repo_access_pat: ${{ secrets.REPO_ACCESS_PAT }}
 
+      - name: Establish Google Cloud Auth
+        id: "auth"
+        uses: "google-github-actions/auth@v2"
+        with:
+          project_id: "stalwart-summer-374519"
+          workload_identity_provider: "projects/515604670361/locations/global/workloadIdentityPools/github/providers/pattern"
+          service_account: "github-runner@stalwart-summer-374519.iam.gserviceaccount.com"
+
       - name: Switch to the right cluster
         run: kubectx ${{ inputs.cluster_name }}
 
