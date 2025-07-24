@@ -63,9 +63,6 @@ jobs:
       - name: Pattern Clusters Init
         run: pattern clusters init
 
-      - name: Pattern Clusters Init Secrets
-        run: pattern clusters init secrets
-
       - name: Switch to the right cluster
         run: kubectx ${{ inputs.cluster_name }}
 
