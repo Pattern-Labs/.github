@@ -60,8 +60,8 @@ jobs:
           workload_identity_provider: "projects/515604670361/locations/global/workloadIdentityPools/github/providers/pattern"
           service_account: "github-runner@stalwart-summer-374519.iam.gserviceaccount.com"
 
-      - name: Pattern Clusters Init
-        run: pattern clusters init
+      # - name: Pattern Clusters Init
+      #   run: pattern clusters init
 
       - name: Switch to the right cluster
         run: kubectx ${{ inputs.cluster_name }}

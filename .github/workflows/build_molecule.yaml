@@ -27,32 +27,14 @@ jobs:
         with:
           lfs: true
 
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Install Helm
-        uses: Azure/setup-helm@v3
-
-      - name: Log in to Harbor Registry
-        run: |
-          echo '${{ secrets.HELM_PASSWORD }}' | helm registry login harbor.rutherford.patternlabs.tech -u '${{ secrets.HELM_USER }}' --password-stdin
-
-      - name: Setup .netrc
-        uses: Pattern-Labs/.github/.github/actions/setup_netrc@main
+      - name: Setup Cloud Deps
+        uses: Pattern-Labs/.github/.github/actions/setup_cloud_deps@main
         with:
           repo_access_pat: ${{ secrets.REPO_ACCESS_PAT }}
-
-      - name: Install the Pattern CLI
-        uses: Pattern-Labs/.github/.github/actions/pattern_cli@main
-
-      - name: Setup Bazel
-        uses: bazel-contrib/setup-bazel@0.15.0
-        with:
-          # Avoid downloading Bazel every time.
-          bazelisk-cache: true
+          docker_user: ${{ secrets.DOCKER_USER }}
+          docker_password: ${{ secrets.DOCKER_PASSWORD }}
+          helm_user: ${{ secrets.HELM_USER }}
+          helm_password: ${{ secrets.HELM_PASSWORD }}
 
       - name: Set Up Build Cache Credentials
         if: ${{ inputs.with_cloud_cache }}
