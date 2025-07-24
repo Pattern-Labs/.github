@@ -69,6 +69,9 @@ jobs:
           workload_identity_provider: "projects/515604670361/locations/global/workloadIdentityPools/github/providers/pattern"
           service_account: "github-runner@stalwart-summer-374519.iam.gserviceaccount.com"
 
+      - name: Install
+        run: sudo apt install google-cloud-sdk-gke-gcloud-auth-plugin
+
       - name: Install the Pattern CLI
         uses: Pattern-Labs/.github/.github/actions/pattern_cli@main
 
