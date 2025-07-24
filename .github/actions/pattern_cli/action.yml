@@ -1,35 +1,19 @@
 name: 'Pattern CLI Setup'
 description: 'Setup Pattern CLI'
-inputs:
-  repo_access_pat:
-    description: 'GitHub Personal Access Token'
-    required: true
-    type: string
 runs:
   using: "composite"
   steps:
-    - name: Checkout dev-containers repo
-      uses: actions/checkout@v3
-      with:
-        repository: Pattern-Labs/dev-containers
-        token: ${{ inputs.repo_access_pat }}
-        path: dev-containers
-        ref: main
+    - name: Make sure .local/bin exists
+      shell: bash    
+      run: mkdir -p ~/.local/bin
 
-    - name: Run gcloud env_module
-      working-directory: ./dev-containers
+    - name: Download Pattern CLI
       shell: bash
-      run: sudo env_modules/99-google_cloud.sh
+      run: curl -L -n -H "Accept: application/octet-stream" -o ~/.local/bin/pattern `curl -L -n https://api.github.com/repos/Pattern-Labs/pattern_cli/releases/latest | jq -r .assets[0].url`
 
-    - name: Install Pattern CLI
-      working-directory: ./dev-containers
+    - name: Make Pattern CLI executable
       shell: bash
-      run: ./install_pattern_cli.sh
-
-    - name: Setup Host
-      working-directory: ./dev-containers
-      shell: bash
-      run: ./setup_host.sh -q
+      run: chmod +x ~/.local/bin/pattern
 
     - name: Test Pattern CLI
       shell: bash 
