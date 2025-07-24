@@ -34,6 +34,7 @@ runs:
       uses: Azure/setup-helm@v3
 
     - name: Log in to Harbor Registry
+      shell: bash
       run: |
         echo '${{ inputs.helm_password }}' | helm registry login harbor.rutherford.patternlabs.tech -u '${{ inputs.helm_user }}' --password-stdin      
 
@@ -43,17 +44,20 @@ runs:
         repo_access_pat: ${{ inputs.repo_access_pat }}
 
     - name: Setup Google Cloud SDK apt keys
+      shell: bash
       run: |
         curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | gpg --dearmor | sudo tee /usr/share/keyrings/cloud.google.gpg > /dev/null
         echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
 
     - name: Apt Update
+      shell: bash
       run: sudo apt-get update -y
 
     - name: Setup Kubectl
       uses: azure/setup-kubectl@v4
 
     - name: Install gke-gcloud-auth-plugin
+      shell: bash
       run: |
         sudo apt install -y \
         google-cloud-sdk-gke-gcloud-auth-plugin \
@@ -75,6 +79,7 @@ runs:
         path: /opt/kubectx
 
     - name: Install kubectx
+      shell: bash
       run: |
         sudo ln -s /opt/kubectx/kubectx /usr/local/bin/kubectx
         sudo ln -s /opt/kubectx/kubens /usr/local/bin/kubens
