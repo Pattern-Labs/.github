@@ -77,5 +77,4 @@ runs:
       working-directory: /tmp
       run: |
         git clone https://github.com/ahmetb/kubectx
-        sudo ln -s kubectx/kubectx /usr/local/bin/kubectx
-        sudo ln -s kubectx/kubens /usr/local/bin/kubens
+        echo "/tmp/kubectx" >> $GITHUB_PATH
