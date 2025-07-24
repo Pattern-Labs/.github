@@ -78,7 +78,10 @@ jobs:
         run: sudo apt-get update -y
 
       - name: Install gke-gcloud-auth-plugin
-        run: sudo apt install google-cloud-sdk-gke-gcloud-auth-plugin
+        run: |
+          sudo apt install -y \
+          google-cloud-sdk-gke-gcloud-auth-plugin \
+          kubectl
 
       - name: Install the Pattern CLI
         uses: Pattern-Labs/.github/.github/actions/pattern_cli@main
