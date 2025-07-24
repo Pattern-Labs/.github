@@ -72,14 +72,10 @@ runs:
         # Avoid downloading Bazel every time.
         bazelisk-cache: true
 
-    - name: Checkout kubectx
-      uses: actions/checkout@v4
-      with:
-        repository: ahmetb/kubectx
-        path: /opt/kubectx
-
     - name: Install kubectx
       shell: bash
+      working-directory: /tmp
       run: |
-        sudo ln -s /opt/kubectx/kubectx /usr/local/bin/kubectx
-        sudo ln -s /opt/kubectx/kubens /usr/local/bin/kubens
+        git clone https://github.com/ahmetb/kubectx
+        sudo ln -s kubectx/kubectx /usr/local/bin/kubectx
+        sudo ln -s kubectx/kubens /usr/local/bin/kubens
