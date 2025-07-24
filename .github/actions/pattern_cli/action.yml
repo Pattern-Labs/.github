@@ -9,7 +9,8 @@ runs:
 
     - name: Download Pattern CLI
       shell: bash
-      run: curl -L -n -H "Accept: application/octet-stream" -o ~/.local/bin/pattern `curl -L -n https://api.github.com/repos/Pattern-Labs/pattern_cli/releases/latest | jq -r .assets[0].url`
+      run: |
+        curl -L -n -H "Accept: application/octet-stream" -o ~/.local/bin/pattern `curl -L -n https://api.github.com/repos/Pattern-Labs/pattern_cli/releases/latest | jq -r .assets[0].url`
 
     - name: Make Pattern CLI executable
       shell: bash
