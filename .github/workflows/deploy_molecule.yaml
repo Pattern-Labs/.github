@@ -86,3 +86,8 @@ jobs:
           fi
           # Run Deploy
           $COMMAND
+
+      - name: Cleanup if Failed
+        # Sometimes the deployment will report failure but still end up deployed.
+        if: failure() || cancelled()
+        run: helm uninstall "${{ inputs.deployment_name }}"
