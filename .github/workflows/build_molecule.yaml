@@ -36,11 +36,34 @@ jobs:
           helm_user: ${{ secrets.HELM_USER }}
           helm_password: ${{ secrets.HELM_PASSWORD }}
 
+      - name: Establish Google Cloud Auth
+        id: "auth"
+        uses: "google-github-actions/auth@v2"
+        with:
+          project_id: "stalwart-summer-374519"
+          workload_identity_provider: "projects/515604670361/locations/global/workloadIdentityPools/github/providers/pattern"
+          service_account: "github-runner@stalwart-summer-374519.iam.gserviceaccount.com"
+
       - name: Set Up Build Cache Credentials
         if: ${{ inputs.with_cloud_cache }}
         env:
           DATA: "${{ secrets.GOOGLE_CLOUD_BUILD_CACHE_ACCESS_KEY }}"
         run: echo $DATA > ./google-services.json
+
+      - name: Setup Auth for Google Cloud Docker Cache
+        uses: google-github-actions/auth@v0
+        with:
+          workload_identity_provider: projects/your-project-id/locations/global/workloadIdentityPools/your-identity-pool/providers/your-provider
+          service_account: github-ci@your-project.iam.gserviceaccount.com
+
+      - name: Cache Docker Images
+        uses: mansagroup/gcs-cache-action@v2
+        with:
+          bucket: cloud_docker_cache
+          path: /var/lib/docker/
+          key: ${{ github.repository }}
+          restore-keys: |
+            ${{ github.repository }}
 
       - name: Build Molecule
         run: |
