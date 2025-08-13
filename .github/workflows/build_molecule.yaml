@@ -45,4 +45,5 @@ jobs:
       - name: Build Molecule
         run: |
           cd ${{ inputs.molecule_path }}
-          pattern molecule build -t ${{ inputs.tag }} --with_cloud_cache=${{ inputs.with_cloud_cache }}
+          # Cause I don't want to update pattern_cli
+          bazel run --compilation_mode=opt "//${{ inputs.molecule_path }}:load" --stamp --embed_label=${{ inputs.tag }} --with_cloud_cache=${{ inputs.with_cloud_cache }} --define OCI_LAYERS_CACHE=bazel-cache/oci_layers
