@@ -42,7 +42,14 @@ jobs:
           DATA: "${{ secrets.GOOGLE_CLOUD_BUILD_CACHE_ACCESS_KEY }}"
         run: echo $DATA > ./google-services.json
 
+      # we were experiencing some flakiness with authorizing with Docker,
+      # try again if we hit an issue and hope it's just flake
       - name: Build Molecule
-        run: |
-          cd ${{ inputs.molecule_path }}
-          pattern molecule build -t ${{ inputs.tag }} --with_cloud_cache=${{ inputs.with_cloud_cache }}
+        uses: nick-fields/retry@v3
+        with:
+          # can take ~14 min a run, but flake should cut out early
+          timeout_minutes: 30
+          max_attempts: 2
+          command: |
+            cd ${{ inputs.molecule_path }}
+            pattern molecule build -t ${{ inputs.tag }} --with_cloud_cache=${{ inputs.with_cloud_cache }}
