@@ -47,8 +47,8 @@ jobs:
       - name: Build Molecule
         uses: nick-fields/retry@v3
         with:
-          # takes ~12.5 min a run, but flake should cut out early
-          timeout_minutes: 25
+          # can take ~14 min a run, but flake should cut out early
+          timeout_minutes: 30
           max_attempts: 2
           command: |
             cd ${{ inputs.molecule_path }}
