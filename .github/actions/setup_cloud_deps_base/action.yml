@@ -50,6 +50,7 @@ runs:
       uses: docker/setup-buildx-action@v3
 
     - name: Check Docker access
+      shell: bash
       run: docker version
 
     - name: Install the Pattern CLI
