@@ -24,24 +24,14 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Log in to Docker Hub
-      uses: docker/login-action@v2
-      with:
-        username: ${{ inputs.docker_user }}
-        password: ${{ inputs.docker_password }}
-
-    - name: Install Helm
-      uses: Azure/setup-helm@v3
-
-    - name: Log in to Harbor Registry
-      shell: bash
-      run: |
-        echo '${{ inputs.helm_password }}' | helm registry login harbor.rutherford.patternlabs.tech -u '${{ inputs.helm_user }}' --password-stdin      
-
-    - name: Setup .netrc
+    - name: Setup Cloud Deps Base
       uses: Pattern-Labs/.github/.github/actions/setup_netrc@main
       with:
         repo_access_pat: ${{ inputs.repo_access_pat }}
+        docker_user: ${{ inputs.docker_user }}
+        docker_password: ${{ inputs.docker_password }}
+        helm_user: ${{ inputs.helm_user }}
+        helm_password: ${{ inputs.helm_password }}
 
     - name: Setup Google Cloud SDK apt keys
       shell: bash
@@ -53,18 +43,12 @@ runs:
       shell: bash
       run: sudo apt-get update -y
 
-    - name: Setup Kubectl
-      uses: azure/setup-kubectl@v4
-
     - name: Install gke-gcloud-auth-plugin
       shell: bash
       run: |
         sudo apt install -y \
         google-cloud-sdk-gke-gcloud-auth-plugin \
         kubectl
-
-    - name: Install the Pattern CLI
-      uses: Pattern-Labs/.github/.github/actions/pattern_cli@main
 
     - name: Setup Bazel
       uses: bazel-contrib/setup-bazel@0.15.0

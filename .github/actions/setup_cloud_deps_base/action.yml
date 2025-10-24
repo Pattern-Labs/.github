@@ -1,0 +1,56 @@
+name: 'Cloud Dependencies Setup'
+description: 'Installs the various cloud dependencies needed for the build and deploy workflows.'
+inputs:
+  repo_access_pat:
+    description: 'GitHub Personal Access Token'
+    required: true
+    type: string
+  docker_user:
+    description: 'Docker Hub Username'
+    required: true
+    type: string
+  docker_password:
+    description: 'Docker Hub Password'
+    required: true
+    type: string
+  helm_user:
+    description: 'Harbor Registry Username'
+    required: true
+    type: string
+  helm_password:
+    description: 'Harbor Registry Password'
+    required: true
+    type: string
+runs:
+  using: "composite"
+  steps:
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ inputs.docker_user }}
+        password: ${{ inputs.docker_password }}
+
+    - name: Install Helm
+      uses: Azure/setup-helm@v3
+
+    - name: Log in to Harbor Registry
+      shell: bash
+      run: |
+        echo '${{ inputs.helm_password }}' | helm registry login harbor.rutherford.patternlabs.tech -u '${{ inputs.helm_user }}' --password-stdin      
+
+    - name: Setup .netrc
+      uses: Pattern-Labs/.github/.github/actions/setup_netrc@main
+      with:
+        repo_access_pat: ${{ inputs.repo_access_pat }}        
+
+    - name: Setup Kubectl
+      uses: azure/setup-kubectl@v4
+
+    - name: Set Up Docker
+      uses: docker/setup-buildx-action@v3
+
+    - name: Check Docker access
+      run: docker version
+
+    - name: Install the Pattern CLI
+      uses: Pattern-Labs/.github/.github/actions/pattern_cli@main
