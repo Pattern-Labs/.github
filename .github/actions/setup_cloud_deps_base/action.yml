@@ -54,3 +54,5 @@ runs:
 
     - name: Install the Pattern CLI
       uses: Pattern-Labs/.github/.github/actions/pattern_cli@main
+      with:
+        add_to_usr_bin: true
