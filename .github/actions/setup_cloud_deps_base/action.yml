@@ -43,7 +43,7 @@ inputs:
   setup_kubectx:
     description: 'If true, sets up kubectx'
     required: false
-    default: true
+    default: false
 runs:
   using: "composite"
   steps:
