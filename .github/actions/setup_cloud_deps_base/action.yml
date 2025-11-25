@@ -62,7 +62,7 @@ runs:
         echo '${{ inputs.helm_password }}' | helm registry login harbor.rutherford.patternlabs.tech -u '${{ inputs.helm_user }}' --password-stdin      
 
     - name: Setup .netrc
-      uses: Pattern-Labs/.github/.github/actions/setup_netrc@main
+      uses: Pattern-Labs/.github/.github/actions/setup_netrc@lb/consolidate_setup_cloud_deps_testable
       with:
         repo_access_pat: ${{ inputs.repo_access_pat }}        
 
@@ -70,13 +70,13 @@ runs:
       uses: azure/setup-kubectl@v4
 
     - name: Install the Pattern CLI
-      uses: Pattern-Labs/.github/.github/actions/pattern_cli@main
+      uses: Pattern-Labs/.github/.github/actions/pattern_cli@lb/consolidate_setup_cloud_deps_testable
       with:
         add_to_usr_bin: ${{ inputs.pattern_cli_add_to_usr_bin }}
 
     - name: Setup GKE GCloud Auth
       if: ${{ inputs.setup_gke_cloud_auth }}
-      uses: Pattern-Labs/.github/.github/actions/gke_cloud_auth@main
+      uses: Pattern-Labs/.github/.github/actions/gke_cloud_auth@lb/consolidate_setup_cloud_deps_testable
 
     - name: Setup Bazel
       if: ${{ inputs.setup_bazel }}
