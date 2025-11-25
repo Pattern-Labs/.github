@@ -124,7 +124,7 @@ jobs:
       # Pattern Labs specific setup #
       ###############################
       - name: Pattern Labs Setup
-        uses: Pattern-Labs/.github/.github/actions/setup_cloud_deps_base@lb/conslidate_setup_cloud_deps
+        uses: Pattern-Labs/.github/.github/actions/setup_cloud_deps_base@main
         with:
           repo_access_pat: ${{ secrets.REPO_ACCESS_PAT }}
           docker_user: ${{ secrets.DOCKER_USER }}

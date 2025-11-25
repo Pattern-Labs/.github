@@ -28,7 +28,7 @@ jobs:
           lfs: true
 
       - name: Setup Cloud Deps
-        uses: Pattern-Labs/.github/.github/actions/setup_cloud_deps@lb/conslidate_setup_cloud_deps
+        uses: Pattern-Labs/.github/.github/actions/setup_cloud_deps@main
         with:
           repo_access_pat: ${{ secrets.REPO_ACCESS_PAT }}
           docker_user: ${{ secrets.DOCKER_USER }}
