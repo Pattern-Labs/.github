@@ -40,7 +40,7 @@ inputs:
     description: 'If true, sets up Docker CLI'
     required: false
     default: false
-  setup_docker_kubectx:
+  setup_kubectx:
     description: 'If true, sets up kubectx'
     required: false
     default: true
@@ -48,7 +48,7 @@ runs:
   using: "composite"
   steps:
     - name: Log in to Docker Hub
-      uses: docker/login-action@v2
+      uses: docker/login-action@v3
       with:
         username: ${{ inputs.docker_user }}
         password: ${{ inputs.docker_password }}

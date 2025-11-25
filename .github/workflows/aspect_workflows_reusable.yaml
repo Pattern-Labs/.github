@@ -181,7 +181,7 @@ jobs:
         with:
           files: bazel-out/_coverage/_coverage_report.dat
           token: ${{ secrets.CODECOV_TOKEN }}
-          functionalities: search # Disable searching for coverage reports. If enabled, it gets confused
+          disable_search: true # Disable searching for coverage reports. If enabled, it gets confused
           # by the bazel convenience symlinks and finds the same coverage report
           # under bazel-out and {workspace}/bazel-out.
       - name: Trigger delivery
