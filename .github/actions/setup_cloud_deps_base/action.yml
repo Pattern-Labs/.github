@@ -1,3 +1,6 @@
+# TODO(lou): currently the only differences between this action and setup_cloud_deps
+#            are the default values for what all it does. Does anything break if we set
+#            all of the defaults to true and by default install everything?
 name: 'Cloud Dependencies Setup'
 description: 'Installs the various cloud dependencies needed for the build and deploy workflows.'
 inputs:
@@ -25,6 +28,22 @@ inputs:
     description: 'If true, copies the Pattern CLI to /usr/bin'
     required: false
     default: false
+  setup_gke_cloud_auth:
+    description: 'If true, sets up Google Cloud SDK auth plugin'
+    required: false
+    default: false
+  setup_bazel:
+    description: 'If true, sets up Bazel'
+    required: false
+    default: false
+  setup_docker_cli:
+    description: 'If true, sets up Docker CLI'
+    required: false
+    default: true
+  setup_kubectx:
+    description: 'If true, sets up kubectx'
+    required: false
+    default: true
 runs:
   using: "composite"
   steps:
@@ -50,14 +69,35 @@ runs:
     - name: Setup Kubectl
       uses: azure/setup-kubectl@v4
 
-    - name: Set Up Docker
-      uses: docker/setup-buildx-action@v3
-
-    - name: Check Docker access
-      shell: bash
-      run: docker version
-
     - name: Install the Pattern CLI
       uses: Pattern-Labs/.github/.github/actions/pattern_cli@main
       with:
         add_to_usr_bin: ${{ inputs.pattern_cli_add_to_usr_bin }}
+
+    - name: Setup GKE GCloud Auth
+      if: ${{ inputs.setup_gke_cloud_auth }}
+      uses: Pattern-Labs/.github/.github/actions/gke_cloud_auth@main
+
+    - name: Setup Bazel
+      if: ${{ inputs.setup_bazel }}
+      uses: bazel-contrib/setup-bazel@0.15.0
+      with:
+        # Avoid downloading Bazel every time.
+        bazelisk-cache: true
+
+    - name: Set Up Docker
+      if: ${{ inputs.setup_docker_cli }}
+      uses: docker/setup-buildx-action@v3
+
+    - name: Check Docker access
+      if: ${{ inputs.setup_docker_cli }}
+      shell: bash
+      run: docker version
+
+    - name: Install kubectx
+      if: ${{ inputs.setup_kubectx }}
+      shell: bash
+      working-directory: /tmp
+      run: |
+        git clone https://github.com/ahmetb/kubectx
+        echo "/tmp/kubectx" >> $GITHUB_PATH
