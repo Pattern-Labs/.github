@@ -76,7 +76,7 @@ runs:
 
     - name: Setup GKE GCloud Auth
       if: ${{ inputs.setup_gke_cloud_auth }}
-      uses: Pattern-Labs/.github/.github/actions/gke_cloud_auth@main
+      uses: Pattern-Labs/.github/.github/actions/gke_cloud_auth@lb/conslidate_setup_cloud_deps
 
     - name: Setup Bazel
       if: ${{ inputs.setup_bazel }}
