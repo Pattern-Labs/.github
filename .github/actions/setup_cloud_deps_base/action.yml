@@ -94,5 +94,7 @@ runs:
       shell: bash
       working-directory: /tmp
       run: |
-        git clone https://github.com/ahmetb/kubectx
-        echo "/tmp/kubectx" >> $GITHUB_PATH
+        if ! which kubectx > /dev/null 2>&1; then
+          git clone https://github.com/ahmetb/kubectx
+          echo "/tmp/kubectx" >> $GITHUB_PATH
+        fi
