@@ -1,35 +1,49 @@
+# TODO(lou): currently the only differences between this action and setup_cloud_deps
+#            are the default values for what all it does. Does anything break if we set
+#            all of the defaults to true and by default install everything?
 name: 'Cloud Dependencies Setup'
 description: 'Installs the various cloud dependencies needed for the build and deploy workflows.'
 inputs:
   repo_access_pat:
     description: 'GitHub Personal Access Token'
     required: true
-    type: string
   docker_user:
     description: 'Docker Hub Username'
     required: true
-    type: string
   docker_password:
     description: 'Docker Hub Password'
     required: true
-    type: string
   helm_user:
     description: 'Harbor Registry Username'
     required: true
-    type: string
   helm_password:
     description: 'Harbor Registry Password'
     required: true
-    type: string
   pattern_cli_add_to_usr_bin:
     description: 'If true, copies the Pattern CLI to /usr/bin'
     required: false
-    default: false
+    default: 'false'
+  setup_gke_cloud_auth:
+    description: 'If true, sets up Google Cloud SDK auth plugin'
+    required: false
+    default: 'false'
+  setup_bazel:
+    description: 'If true, sets up Bazel'
+    required: false
+    default: 'false'
+  setup_docker_cli:
+    description: 'If true, sets up Docker CLI'
+    required: false
+    default: 'true'
+  setup_kubectx:
+    description: 'If true, sets up kubectx'
+    required: false
+    default: 'false'
 runs:
   using: "composite"
   steps:
     - name: Log in to Docker Hub
-      uses: docker/login-action@v2
+      uses: docker/login-action@v3
       with:
         username: ${{ inputs.docker_user }}
         password: ${{ inputs.docker_password }}
@@ -50,14 +64,39 @@ runs:
     - name: Setup Kubectl
       uses: azure/setup-kubectl@v4
 
-    - name: Set Up Docker
-      uses: docker/setup-buildx-action@v3
-
-    - name: Check Docker access
-      shell: bash
-      run: docker version
-
     - name: Install the Pattern CLI
       uses: Pattern-Labs/.github/.github/actions/pattern_cli@main
       with:
         add_to_usr_bin: ${{ inputs.pattern_cli_add_to_usr_bin }}
+
+    - name: Setup GKE GCloud Auth
+      if: ${{ inputs.setup_gke_cloud_auth == 'true' }}
+      uses: Pattern-Labs/.github/.github/actions/gke_cloud_auth@main
+
+    - name: Setup Bazel
+      if: ${{ inputs.setup_bazel == 'true' }}
+      uses: bazel-contrib/setup-bazel@0.15.0
+      with:
+        # Avoid downloading Bazel every time.
+        bazelisk-cache: true
+
+    - name: Set Up Docker
+      if: ${{ inputs.setup_docker_cli == 'true' }}
+      uses: docker/setup-buildx-action@v3
+
+    - name: Check Docker access
+      if: ${{ inputs.setup_docker_cli == 'true' }}
+      shell: bash
+      run: docker version
+
+    - name: Install kubectx
+      if: ${{ inputs.setup_kubectx == 'true' }}
+      shell: bash
+      working-directory: /tmp
+      run: |
+        if ! which kubectx > /dev/null 2>&1; then
+          if [ ! -d "kubectx" ]; then
+            git clone https://github.com/ahmetb/kubectx
+          fi
+          echo "/tmp/kubectx" >> $GITHUB_PATH
+        fi

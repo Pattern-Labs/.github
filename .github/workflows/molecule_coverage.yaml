@@ -18,7 +18,7 @@ jobs:
     runs-on: [github-hosted-cloud-builder]
     steps:
       - name: Log in to Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASSWORD }}
@@ -64,7 +64,7 @@ jobs:
           bazelisk-cache: true
 
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           lfs: true
 

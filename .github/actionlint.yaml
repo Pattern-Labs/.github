@@ -1,0 +1,19 @@
+# Used by actionlint (https://github.com/rhysd/actionlint)
+
+# Configuration related to self-hosted runner.
+self-hosted-runner:
+  # Labels of self-hosted runner in array of strings.
+  labels:
+    - github-hosted-cloud-builder
+    - aspect-small
+    - aspect-default
+    - aspect-warming
+    - aspect-workflows
+
+# Path-specific configurations.
+paths:
+  .github/workflows/**/*.{yml,yaml}:
+    # List of regular expressions to filter errors by the error messages.
+    ignore:
+      # Ignore the a specific errorfrom regex linting
+      - ^invalid glob pattern\. unexpected character '\]' while checking character match \[\]\. character match with single character is useless\. simply use x instead of \[x\].*$
