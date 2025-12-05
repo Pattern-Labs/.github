@@ -50,6 +50,10 @@ on:
         description: Path to the Aspect Workflows config.yaml file
         type: string
         default: .aspect/workflows/config.yaml
+      setup_pattern_cli:
+        description: Whether to setup the Pattern CLI.
+        type: boolean
+        default: true
       delivery-workflow:
         description: The name of the file which contains the delivery workflow
         type: string
@@ -131,7 +135,7 @@ jobs:
           docker_password: ${{ secrets.DOCKER_PASSWORD }}
           helm_user: ${{ secrets.HELM_USER }}
           helm_password: ${{ secrets.HELM_PASSWORD }}
-          pattern_cli_add_to_usr_bin: true
+          skip_pattern_cli: ${{ inputs.skip_pattern_cli }}
 
       - name: ${{ fromJson(needs.setup.outputs.cfg).workflows_config[matrix.job].name }}
         uses: aspect-build/workflows-action@5.15.0

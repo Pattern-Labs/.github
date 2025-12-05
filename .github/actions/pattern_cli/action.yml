@@ -1,15 +1,15 @@
-name: 'Pattern CLI Setup'
-description: 'Setup Pattern CLI'
+name: "Pattern CLI Setup"
+description: "Setup Pattern CLI"
 inputs:
   add_to_usr_bin:
-    description: 'If true, copies the Pattern CLI to /usr/bin'
+    description: "If true, copies the Pattern CLI to /usr/bin"
     required: false
-    default: false
+    default: true
 runs:
   using: "composite"
   steps:
     - name: Make sure .local/bin exists
-      shell: bash    
+      shell: bash
       run: mkdir -p ~/.local/bin
 
     - name: Download Pattern CLI
@@ -27,5 +27,5 @@ runs:
       run: sudo cp ~/.local/bin/pattern /usr/bin/pattern
 
     - name: Test Pattern CLI
-      shell: bash 
+      shell: bash
       run: pattern version

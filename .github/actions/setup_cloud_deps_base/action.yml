@@ -1,44 +1,48 @@
 # TODO(lou): currently the only differences between this action and setup_cloud_deps
 #            are the default values for what all it does. Does anything break if we set
 #            all of the defaults to true and by default install everything?
-name: 'Cloud Dependencies Setup'
-description: 'Installs the various cloud dependencies needed for the build and deploy workflows.'
+name: "Cloud Dependencies Setup"
+description: "Installs the various cloud dependencies needed for the build and deploy workflows."
 inputs:
   repo_access_pat:
-    description: 'GitHub Personal Access Token'
+    description: "GitHub Personal Access Token"
     required: true
   docker_user:
-    description: 'Docker Hub Username'
+    description: "Docker Hub Username"
     required: true
   docker_password:
-    description: 'Docker Hub Password'
+    description: "Docker Hub Password"
     required: true
   helm_user:
-    description: 'Harbor Registry Username'
+    description: "Harbor Registry Username"
     required: true
   helm_password:
-    description: 'Harbor Registry Password'
+    description: "Harbor Registry Password"
     required: true
+  setup_pattern_cli:
+    description: "If true, skips the Pattern CLI installation"
+    required: false
+    default: true
   pattern_cli_add_to_usr_bin:
-    description: 'If true, copies the Pattern CLI to /usr/bin'
+    description: "If true, copies the Pattern CLI to /usr/bin"
     required: false
-    default: 'false'
+    default: "true"
   setup_gke_cloud_auth:
-    description: 'If true, sets up Google Cloud SDK auth plugin'
+    description: "If true, sets up Google Cloud SDK auth plugin"
     required: false
-    default: 'false'
+    default: "false"
   setup_bazel:
-    description: 'If true, sets up Bazel'
+    description: "If true, sets up Bazel"
     required: false
-    default: 'false'
+    default: "false"
   setup_docker_cli:
-    description: 'If true, sets up Docker CLI'
+    description: "If true, sets up Docker CLI"
     required: false
-    default: 'true'
+    default: "true"
   setup_kubectx:
-    description: 'If true, sets up kubectx'
+    description: "If true, sets up kubectx"
     required: false
-    default: 'false'
+    default: "false"
 runs:
   using: "composite"
   steps:
@@ -54,17 +58,18 @@ runs:
     - name: Log in to Harbor Registry
       shell: bash
       run: |
-        echo '${{ inputs.helm_password }}' | helm registry login harbor.rutherford.patternlabs.tech -u '${{ inputs.helm_user }}' --password-stdin      
+        echo '${{ inputs.helm_password }}' | helm registry login harbor.rutherford.patternlabs.tech -u '${{ inputs.helm_user }}' --password-stdin
 
     - name: Setup .netrc
       uses: Pattern-Labs/.github/.github/actions/setup_netrc@main
       with:
-        repo_access_pat: ${{ inputs.repo_access_pat }}        
+        repo_access_pat: ${{ inputs.repo_access_pat }}
 
     - name: Setup Kubectl
       uses: azure/setup-kubectl@v4
 
     - name: Install the Pattern CLI
+      if: ${{ inputs.setup_pattern_cli == 'true' }}
       uses: Pattern-Labs/.github/.github/actions/pattern_cli@main
       with:
         add_to_usr_bin: ${{ inputs.pattern_cli_add_to_usr_bin }}
