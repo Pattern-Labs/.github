@@ -135,7 +135,7 @@ jobs:
           docker_password: ${{ secrets.DOCKER_PASSWORD }}
           helm_user: ${{ secrets.HELM_USER }}
           helm_password: ${{ secrets.HELM_PASSWORD }}
-          skip_pattern_cli: ${{ inputs.skip_pattern_cli }}
+          setup_pattern_cli: ${{ inputs.setup_pattern_cli }}
 
       - name: ${{ fromJson(needs.setup.outputs.cfg).workflows_config[matrix.job].name }}
         uses: aspect-build/workflows-action@5.15.0
