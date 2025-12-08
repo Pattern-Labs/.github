@@ -181,7 +181,7 @@ jobs:
         # will flag them as having passed even if they failed.
         if: ${{ always() && fromJson(needs.setup.outputs.cfg).workflows_config[matrix.job].codecov_upload }}
         # https://github.com/marketplace/actions/codecov
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           files: bazel-out/_coverage/_coverage_report.dat
           token: ${{ secrets.CODECOV_TOKEN }}
