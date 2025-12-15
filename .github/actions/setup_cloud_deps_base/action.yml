@@ -19,6 +19,12 @@ inputs:
   helm_password:
     description: "Harbor Registry Password"
     required: true
+  helm_version:
+    description: "Helm version to install"
+    required: false
+    # latest version at the time. v4 has breaking changes, will
+    # need to test before upgrading
+    default: "v3.18.4"
   setup_pattern_cli:
     description: "If true, skips the Pattern CLI installation"
     required: false
@@ -54,6 +60,8 @@ runs:
 
     - name: Install Helm
       uses: Azure/setup-helm@v4.3.0
+      with:
+        version: ${{ inputs.helm_version }}
 
     - name: Log in to Harbor Registry
       shell: bash
