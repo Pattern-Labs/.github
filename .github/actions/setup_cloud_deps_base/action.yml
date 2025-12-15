@@ -53,7 +53,7 @@ runs:
         password: ${{ inputs.docker_password }}
 
     - name: Install Helm
-      uses: Azure/setup-helm@v3
+      uses: Azure/setup-helm@v4.3.0
 
     - name: Log in to Harbor Registry
       shell: bash
