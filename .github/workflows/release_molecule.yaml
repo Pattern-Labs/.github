@@ -28,7 +28,9 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Install Helm
-        uses: Azure/setup-helm@v3
+        uses: Azure/setup-helm@v4.3.1
+        with:
+          version: "v3.19.4"
 
       - name: Log in to Harbor Registry
         run: |
