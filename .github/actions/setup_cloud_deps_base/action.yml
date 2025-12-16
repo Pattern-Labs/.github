@@ -24,7 +24,7 @@ inputs:
     required: false
     # latest version at the time. v4 has breaking changes, will
     # need to test before upgrading
-    default: "v3.18.4"
+    default: "v3.19.4"
   setup_pattern_cli:
     description: "If true, skips the Pattern CLI installation"
     required: false
