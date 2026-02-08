@@ -33,6 +33,10 @@ inputs:
     description: "If true, copies the Pattern CLI to /usr/bin"
     required: false
     default: "true"
+  pattern_cli_version:
+    description: "Pattern CLI version to install"
+    required: false
+    default: "latest"
   setup_gke_cloud_auth:
     description: "If true, sets up Google Cloud SDK auth plugin"
     required: false
@@ -81,6 +85,7 @@ runs:
       uses: Pattern-Labs/.github/.github/actions/pattern_cli@main
       with:
         add_to_usr_bin: ${{ inputs.pattern_cli_add_to_usr_bin }}
+        version: ${{ inputs.pattern_cli_version }}
 
     - name: Setup GKE GCloud Auth
       if: ${{ inputs.setup_gke_cloud_auth == 'true' }}

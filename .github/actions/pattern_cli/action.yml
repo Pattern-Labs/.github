@@ -5,6 +5,10 @@ inputs:
     description: "If true, copies the Pattern CLI to /usr/bin"
     required: false
     default: true
+  version:
+    description: "Pattern CLI version to install (e.g., v0.40.0 or latest)"
+    required: false
+    default: "latest"
 runs:
   using: "composite"
   steps:
@@ -15,7 +19,13 @@ runs:
     - name: Download Pattern CLI
       shell: bash
       run: |
-        curl -L -n -H "Accept: application/octet-stream" -o ~/.local/bin/pattern `curl -L -n https://api.github.com/repos/Pattern-Labs/pattern_cli/releases/latest | jq -r .assets[0].url`
+        if [ -z "${{ inputs.version }}" ] || [ "${{ inputs.version }}" = "latest" ]; then
+          release_url="https://api.github.com/repos/Pattern-Labs/pattern_cli/releases/latest"
+        else
+          release_url="https://api.github.com/repos/Pattern-Labs/pattern_cli/releases/tags/${{ inputs.version }}"
+        fi
+        url="$(curl -L -n "${release_url}" | jq -r .assets[0].url)"
+        curl -L -n -H "Accept: application/octet-stream" -o ~/.local/bin/pattern "$url"
 
     - name: Make Pattern CLI executable
       shell: bash
