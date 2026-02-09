@@ -5,9 +5,19 @@ inputs:
     description: "If true, copies the Pattern CLI to /usr/bin"
     required: false
     default: true
+  version:
+    description: "Pattern CLI version to install (e.g., v1.2.3, latest, or a branch name)"
+    required: false
+    default: "latest"
 runs:
   using: "composite"
   steps:
+    - name: Setup Go (branch build support)
+      if: inputs.version != 'latest'
+      uses: actions/setup-go@v5
+      with:
+        go-version: "1.25"
+
     - name: Make sure .local/bin exists
       shell: bash
       run: mkdir -p ~/.local/bin
@@ -15,7 +25,30 @@ runs:
     - name: Download Pattern CLI
       shell: bash
       run: |
-        curl -L -n -H "Accept: application/octet-stream" -o ~/.local/bin/pattern `curl -L -n https://api.github.com/repos/Pattern-Labs/pattern_cli/releases/latest | jq -r .assets[0].url`
+        VERSION="${{ inputs.version }}"
+        if [ -z "$VERSION" ] || [ "$VERSION" = "latest" ]; then
+          release_url="https://api.github.com/repos/Pattern-Labs/pattern_cli/releases/latest"
+        else
+          release_url="https://api.github.com/repos/Pattern-Labs/pattern_cli/releases/tags/${VERSION}"
+        fi
+        asset_url="$(curl -L -n -s "${release_url}" | jq -r '.assets[0].url // empty')"
+        if [ -n "$asset_url" ]; then
+          curl -L -n -H "Accept: application/octet-stream" -o ~/.local/bin/pattern "$asset_url"
+          exit 0
+        fi
+
+        if ! command -v go >/dev/null 2>&1; then
+          echo "Go is required to build Pattern CLI from ref '${VERSION}'." >&2
+          exit 1
+        fi
+
+        echo "Building Pattern CLI from '${VERSION}'..."
+        GOBIN=~/.local/bin GOPRIVATE=github.com/Pattern-Labs/* GONOSUMDB=github.com/Pattern-Labs/* \
+          go install github.com/Pattern-Labs/pattern_cli/cmd/pattern@"${VERSION}"
+
+    - name: Add Pattern CLI to PATH
+      shell: bash
+      run: echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
     - name: Make Pattern CLI executable
       shell: bash

@@ -54,6 +54,10 @@ on:
         description: Whether to setup the Pattern CLI.
         type: boolean
         default: true
+      pattern_cli_version:
+        description: Pattern CLI version to install (tag, latest, or branch name).
+        type: string
+        default: latest
       delivery-workflow:
         description: The name of the file which contains the delivery workflow
         type: string
@@ -136,6 +140,7 @@ jobs:
           helm_user: ${{ secrets.HELM_USER }}
           helm_password: ${{ secrets.HELM_PASSWORD }}
           setup_pattern_cli: ${{ inputs.setup_pattern_cli }}
+          pattern_cli_version: ${{ inputs.pattern_cli_version }}
 
       - name: ${{ fromJson(needs.setup.outputs.cfg).workflows_config[matrix.job].name }}
         uses: aspect-build/workflows-action@5.15.0

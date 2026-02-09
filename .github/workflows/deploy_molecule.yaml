@@ -32,6 +32,11 @@ on:
         required: false
         default: "rutherford"
         type: string
+      pattern_cli_version:
+        description: Pattern CLI version to install (tag, latest, or branch name)
+        required: false
+        type: string
+        default: latest
 
 jobs:
   deploy-molecule:
@@ -51,6 +56,7 @@ jobs:
           docker_password: ${{ secrets.DOCKER_PASSWORD }}
           helm_user: ${{ secrets.HELM_USER }}
           helm_password: ${{ secrets.HELM_PASSWORD }}
+          pattern_cli_version: ${{ inputs.pattern_cli_version }}
 
       - name: Establish Google Cloud Auth
         id: "auth"

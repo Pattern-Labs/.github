@@ -11,6 +11,11 @@ on:
         description: coverage percentage we should fail on
         required: true
         type: number
+      pattern_cli_version:
+        description: Pattern CLI version to install (tag, latest, or branch name)
+        required: false
+        type: string
+        default: latest
 
 jobs:
   test-molecule:
@@ -54,10 +59,9 @@ jobs:
           password: ${{ secrets.REPO_ACCESS_PAT }}
 
       - name: Install the Pattern CLI
-        run: |
-          mkdir -p ~/.local/bin
-          curl -L -n -H "Accept: application/octet-stream" -o $HOME/.local/bin/pattern `curl -L -n https://api.github.com/repos/Pattern-Labs/pattern_cli/releases/latest | jq -r .assets[0].url`
-          chmod +x $HOME/.local/bin/pattern
+        uses: Pattern-Labs/.github/.github/actions/pattern_cli@main
+        with:
+          version: ${{ inputs.pattern_cli_version }}
 
       - name: Setup Bazel
         uses: bazel-contrib/setup-bazel@0.9.1
