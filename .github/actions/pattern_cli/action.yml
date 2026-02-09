@@ -46,6 +46,10 @@ runs:
         GOBIN=~/.local/bin GOPRIVATE=github.com/Pattern-Labs/* GONOSUMDB=github.com/Pattern-Labs/* \
           go install github.com/Pattern-Labs/pattern_cli/cmd/pattern@"${VERSION}"
 
+    - name: Add Pattern CLI to PATH
+      shell: bash
+      run: echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
     - name: Make Pattern CLI executable
       shell: bash
       run: chmod +x ~/.local/bin/pattern
