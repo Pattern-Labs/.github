@@ -11,11 +11,6 @@ on:
         description: tag to tag built images with
         required: true
         type: string
-      pattern_cli_version:
-        description: Pattern CLI version to install (e.g., v0.40.0 or latest).
-        required: false
-        type: string
-        default: latest
       with_cloud_cache:
         description: whether to use the cloud cache
         required: false
@@ -45,7 +40,6 @@ jobs:
           docker_password: ${{ secrets.DOCKER_PASSWORD }}
           helm_user: ${{ secrets.HELM_USER }}
           helm_password: ${{ secrets.HELM_PASSWORD }}
-          pattern_cli_version: ${{ inputs.pattern_cli_version }}
           pattern_cli_version: ${{ inputs.pattern_cli_version }}
 
       - name: Set Up Build Cache Credentials
