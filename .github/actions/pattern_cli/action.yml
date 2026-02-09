@@ -12,6 +12,12 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Setup Go (branch build support)
+      if: inputs.version != 'latest'
+      uses: actions/setup-go@v5
+      with:
+        go-version: "1.22"
+
     - name: Make sure .local/bin exists
       shell: bash
       run: mkdir -p ~/.local/bin
