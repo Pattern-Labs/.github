@@ -64,7 +64,7 @@ jobs:
 
 
       - name: Install the Pattern CLI
-        uses: Pattern-Labs/.github/.github/actions/pattern_cli@feat/kts/pattern-cli-version-selector
+        uses: Pattern-Labs/.github/.github/actions/pattern_cli@main
         with:
           version: ${{ inputs.pattern_cli_version }}
 
