@@ -33,7 +33,7 @@ on:
         default: "rutherford"
         type: string
       pattern_cli_version:
-        description: Pattern CLI version to install
+        description: Pattern CLI version to install (tag, latest, or branch name)
         required: false
         type: string
         default: latest

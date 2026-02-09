@@ -34,7 +34,7 @@ inputs:
     required: false
     default: "true"
   pattern_cli_version:
-    description: "Pattern CLI version to install"
+    description: "Pattern CLI version to install (tag, latest, or branch name)"
     required: false
     default: "latest"
   setup_gke_cloud_auth:
