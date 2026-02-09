@@ -82,7 +82,7 @@ runs:
 
     - name: Install the Pattern CLI
       if: ${{ inputs.setup_pattern_cli == 'true' }}
-      uses: Pattern-Labs/.github/.github/actions/pattern_cli@main
+      uses: ./.github/actions/pattern_cli
       with:
         add_to_usr_bin: ${{ inputs.pattern_cli_add_to_usr_bin }}
         version: ${{ inputs.pattern_cli_version }}

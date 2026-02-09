@@ -59,7 +59,7 @@ jobs:
           password: ${{ secrets.REPO_ACCESS_PAT }}
 
       - name: Install the Pattern CLI
-        uses: Pattern-Labs/.github/.github/actions/pattern_cli@main
+        uses: ./.github/actions/pattern_cli
         with:
           version: ${{ inputs.pattern_cli_version }}
 
