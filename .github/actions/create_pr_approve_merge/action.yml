@@ -33,7 +33,7 @@ inputs:
     description: Pull request body/description
     type: string
     required: false
-    default: Automated PR created by github action.
+    default: "Automated PR created by github action."
   branch:
     description: Branch name for the pull request
     type: string
