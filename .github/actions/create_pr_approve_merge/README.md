@@ -2,30 +2,6 @@
 
 A composite action that creates a pull request, approves it, and automatically merges it. Designed for workflows where a post-PR-merge action needs to push file(s) to main.
 
-## Inputs
-
-### Required
-
-- `repository`: Target repository (e.g., "pattern-labs/maps")
-- `repo-access-token`: Token with repo access for creating and merging PRs
-- `pr-approver-token`: Token for approving the pull request
-
-### Optional
-
-- `commit-message`: Commit message for the changes (default: Automated PR creation, approval, and merge commit.)
-- `title`: Pull request title (default: Automated PR creation, approval, and merge)
-- `add-paths`: Files to add to the commit (space or newline separated, defaults: .)
-- `body`: Pull request body/description (default: "Automated PR created by reusable action")
-- `branch`: Branch name for the pull request (default: "automation/${{ github.run_id }}")
-- `path`: Working directory path (default: ".")
-- `delete-branch`: Whether to delete the branch after merge (default: "true")
-- `merge-method`: Merge method - squash, merge, or rebase (default: "squash")
-
-## Outputs
-
-- `pull-request-number`: The number of the created pull request
-- `pull-request-url`: The URL of the created pull request
-
 ## Usage Example
 
 ```yaml

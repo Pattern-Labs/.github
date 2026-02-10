@@ -18,17 +18,17 @@ inputs:
     description: Commit message for the changes
     type: string
     required: false
-    default: Automated PR creation, approval, and merge commit.
+    default: "Automated PR creation, approval, and merge commit."
   title:
     description: Pull request title
     type: string
     required: false
-    default: Automated PR creation, approval, and merge
+    default: "Automated PR creation, approval, and merge"
   add-paths:
     description: Files to add to the commit (space or newline separated)
     type: string
     required: false
-    default: '.'
+    default: "."
   body:
     description: Pull request body/description
     type: string
@@ -39,21 +39,6 @@ inputs:
     type: string
     required: false
     default: automation/${{ github.run_id }}
-  path:
-    description: Working directory path
-    type: string
-    required: false
-    default: '.'
-  delete-branch:
-    description: Whether to delete the branch after merge
-    type: boolean
-    required: false
-    default: true
-  merge-method:
-    description: Merge method (squash, merge, or rebase)
-    type: string
-    required: false
-    default: squash
 outputs:
   pull-request-number:
     description: 'The number of the created pull request'
@@ -74,32 +59,25 @@ runs:
      uses: peter-evans/create-pull-request@v6
      with:
         token: ${{ inputs.repo-access-token }}
-        path: ${{ inputs.path }}
+        path: "."
         commit-message: ${{ inputs.commit-message }}
         branch: ${{ inputs.branch }}
         title: ${{ inputs.title }}
         add-paths: ${{ inputs.add-paths }}
         body: ${{ inputs.body }}
-        delete-branch: ${{ inputs.delete-branch }}
+        delete-branch: true
    - name: Approve Pull Request
      if: steps.create-pr.outputs.pull-request-number != ''
-     shell: bash
-     env:
-       GH_TOKEN: ${{ inputs.pr-approver-token }}
-     run: |
-       gh pr review \
-         --repo "${{ inputs.repository }}" \
-         "${{ steps.create-pr.outputs.pull-request-number }}" \
-         --approve
-
+     uses: juliangruber/approve-pull-request-action@v2
+     with:
+       github-token: ${{ inputs.pr-approver-token }}
+       number: ${{ steps.create-pr.outputs.pr-number }}
+       repo: ${{ inputs.repository }}
    - name: Merge Pull Request
      if: steps.create-pr.outputs.pull-request-number != ''
-     shell: bash
-     env:
-       GH_TOKEN: ${{ inputs.repo-access-token }}
-     run: |
-       gh pr merge \
-         --repo "${{ inputs.repository }}" \
-         "${{ steps.create-pr.outputs.pull-request-number }}" \
-         --${{ inputs.merge-method }} \
-         --auto
+     uses: juliangruber/merge-pull-request-action@v1
+     with:
+      github-token: ${{ inputs.repo-access-token }}
+      number: ${{ steps.create-pr.outputs.pr-number }}
+      method: squash
+      repo: ${{ inputs.repository }}
