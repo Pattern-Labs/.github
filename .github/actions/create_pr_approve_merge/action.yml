@@ -3,7 +3,7 @@ description: "Creates a new PR for user-specified files, approves it, and merges
 
 inputs:
   repository: 
-    description: Target repository (e.g., "pattern-labs/maps")
+    description: Target repository within the Pattern-Labs organization (e.g., "maps")
     type: string
     required: true
   repo-access-token:
@@ -72,7 +72,7 @@ runs:
      with:
        github-token: ${{ inputs.pr-approver-token }}
        number: ${{ steps.create-pr.outputs.pr-number }}
-       repo: ${{ inputs.repository }}
+       repo: Pattern-Labs/${{ inputs.repository }}
    - name: Merge Pull Request
      if: steps.create-pr.outputs.pull-request-number != ''
      uses: juliangruber/merge-pull-request-action@v1
@@ -80,4 +80,4 @@ runs:
       github-token: ${{ inputs.repo-access-token }}
       number: ${{ steps.create-pr.outputs.pr-number }}
       method: squash
-      repo: ${{ inputs.repository }}
+      repo: Pattern-Labs/${{ inputs.repository }}

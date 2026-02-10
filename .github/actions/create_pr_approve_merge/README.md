@@ -8,19 +8,13 @@ A composite action that creates a pull request, approves it, and automatically m
 - name: Create Version Bump PR
   uses: Pattern-Labs/.github/.github/actions/create_pr_approve_merge@main
   with:
-    repository: pattern-labs/maps
+    repository: maps
     commit-message: "Bumping versions for map(s) ${{ steps.detect-changes.outputs.changed_maps }}"
     title: "Bumping versions for map(s) ${{ steps.detect-changes.outputs.changed_maps }}"
     add-paths: map-versions.json
     repo-access-token: ${{ secrets.REPO_ACCESS_PAT }}
     pr-approver-token: ${{ secrets.PATTERN_PR_APPROVER }}
 ```
-
-## How It Works
-
-1. **Creates PR**: Uses `peter-evans/create-pull-request` to create a pull request with the specified changes
-2. **Approves PR**: Uses GitHub CLI to approve the pull request (only if PR was created)
-3. **Merges PR**: Uses GitHub CLI to merge the pull request with auto-merge (only if PR was created)
 
 ## Notes
 
