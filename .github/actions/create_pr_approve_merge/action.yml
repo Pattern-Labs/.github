@@ -1,0 +1,83 @@
+name: "Create PR, Approve, and Merge"
+description: "Creates a new PR for user-specified files, approves it, and merges it into main"
+
+inputs:
+  repository: 
+    description: Target repository within the Pattern-Labs organization (e.g., "maps")
+    type: string
+    required: true
+  repo-access-token:
+    description: 'Token with repo access for creating and merging PRs'
+    type: string
+    required: true
+  pr-approver-token:
+    description: 'Token for approving the pull request'
+    type: string
+    required: true
+  commit-message:
+    description: Commit message for the changes
+    type: string
+    required: false
+    default: "Automated PR creation, approval, and merge commit."
+  title:
+    description: Pull request title
+    type: string
+    required: false
+    default: "Automated PR creation, approval, and merge"
+  add-paths:
+    description: Files to add to the commit (space or newline separated)
+    type: string
+    required: false
+    default: "."
+  body:
+    description: Pull request body/description
+    type: string
+    required: false
+    default: "Automated PR created by github action."
+  branch:
+    description: Branch name for the pull request
+    type: string
+    required: false
+    default: automation/${{ github.run_id }}
+outputs:
+  pull-request-number:
+    description: 'The number of the created pull request'
+    value: ${{ steps.create-pr.outputs.pr-number }}
+  pull-request-url:
+    description: 'The URL of the created pull request'
+    value: ${{ steps.create-pr.outputs.pr-url }}
+
+runs:
+  using: 'composite'
+  steps:
+   - name: Setup .netrc
+     uses: Pattern-Labs/.github/.github/actions/setup_netrc@main
+     with:
+      repo_access_pat: ${{ inputs.repo-access-token }}
+   - name: Create Pull Request
+     id: create-pr
+     uses: peter-evans/create-pull-request@v6
+     with:
+        token: ${{ inputs.repo-access-token }}
+        path: "."
+        commit-message: ${{ inputs.commit-message }}
+        branch: ${{ inputs.branch }}
+        title: ${{ inputs.title }}
+        add-paths: ${{ inputs.add-paths }}
+        body: ${{ inputs.body }}
+        delete-branch: true
+   - name: Approve Pull Request
+     if: steps.create-pr.outputs.pull-request-number != ''
+     uses: juliangruber/approve-pull-request-action@v2
+     with:
+       github-token: ${{ inputs.pr-approver-token }}
+       number: ${{ steps.create-pr.outputs.pr-number }}
+       repo: Pattern-Labs/${{ inputs.repository }}
+   - name: Merge Pull Request
+     if: steps.create-pr.outputs.pull-request-number != ''
+     uses: juliangruber/merge-pull-request-action@v1
+     with:
+      github-token: ${{ inputs.repo-access-token }}
+      number: ${{ steps.create-pr.outputs.pr-number }}
+      method: squash
+      repo: Pattern-Labs/${{ inputs.repository }}
