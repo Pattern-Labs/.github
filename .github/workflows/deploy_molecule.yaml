@@ -66,6 +66,10 @@ jobs:
           workload_identity_provider: "projects/515604670361/locations/global/workloadIdentityPools/github/providers/pattern"
           service_account: "github-runner@stalwart-summer-374519.iam.gserviceaccount.com"
 
+      - uses: "google-github-actions/setup-gcloud@v2"
+        with:
+          install_components: "gke-gcloud-auth-plugin"
+
       - name: Pattern Clusters Init
         run: pattern clusters init
 
