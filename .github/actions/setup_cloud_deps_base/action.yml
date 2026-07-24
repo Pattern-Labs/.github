@@ -70,7 +70,7 @@ runs:
     - name: Log in to Harbor Registry
       shell: bash
       run: |
-        echo '${{ inputs.helm_password }}' | helm registry login harbor.rutherford.patternlabs.tech -u '${{ inputs.helm_user }}' --password-stdin
+        echo '${{ inputs.docker_password }}' | helm registry login registry-1.docker.io -u '${{ inputs.docker_user }}' --password-stdin
 
     - name: Setup .netrc
       uses: Pattern-Labs/.github/.github/actions/setup_netrc@main
