@@ -20,6 +20,11 @@ on:
         required: false
         type: string
         default: latest
+      helm_oci_repo:
+        description: OCI repo to push the chart to (overrides the CLI's default of Docker Hub)
+        required: false
+        type: string
+        default: ""
     
 jobs:
   release-molecule:
@@ -36,6 +41,10 @@ jobs:
         uses: Azure/setup-helm@v4.3.1
         with:
           version: "v3.19.4"
+
+      - name: Log in to Docker Hub for Helm
+        run: |
+           echo '${{ secrets.DOCKER_PASSWORD }}' | helm registry login registry-1.docker.io -u '${{ secrets.DOCKER_USER }}' --password-stdin
 
       - name: Log in to Harbor Registry
         run: |
@@ -80,6 +89,8 @@ jobs:
           lfs: true
 
       - name: Release Molecule
+        env:
+          HELM_OCI_REPO: ${{ inputs.helm_oci_repo }}
         run: |
           cd ${{ inputs.molecule_path }}
           pattern molecule release ${{ inputs.chart_name}} ${{ inputs.tag }}
