@@ -17,4 +17,4 @@ runs:
       shell: bash
       run: |
         sudo apt install -y \
-        google-cloud-sdk-gke-gcloud-auth-plugin
+        google-cloud-cli-gke-gcloud-auth-plugin
