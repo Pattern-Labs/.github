@@ -30,7 +30,7 @@ on:
       cluster_name:
         description: name of the cluster to deploy to
         required: false
-        default: "rutherford"
+        default: "dalton"
         type: string
       pattern_cli_version:
         description: Pattern CLI version to install (tag, latest, or branch name)
@@ -71,7 +71,7 @@ jobs:
           install_components: "gke-gcloud-auth-plugin"
 
       - name: Pattern Clusters Init
-        run: pattern clusters init
+        run: pattern clusters init --clusters ${{ inputs.cluster_name }}
 
       - name: Switch to the right cluster
         run: kubectx ${{ inputs.cluster_name }}
