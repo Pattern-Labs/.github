@@ -37,6 +37,10 @@ on:
         required: false
         type: string
         default: latest
+      ttl:
+        description: release TTL as a Go duration (e.g. 2h, 30m); 0 for no TTL; empty keeps the pattern CLI default (12h)
+        required: false
+        type: string
 
 jobs:
   deploy-molecule:
@@ -89,6 +93,10 @@ jobs:
           # Check if deployment_name is set is set
           if [ -n "${{ inputs.deployment_name }}" ]; then
             COMMAND="$COMMAND -n ${{ inputs.deployment_name }}"
+          fi
+          # Check if ttl is set
+          if [ -n "${{ inputs.ttl }}" ]; then
+            COMMAND="$COMMAND --ttl ${{ inputs.ttl }}"
           fi
           # Check if helm flags is set
           if [ -n "${{ inputs.helm_flags }}" ]; then
